@@ -1,7 +1,7 @@
 # Energy-Data-Application
 Hello!
 
-This is our Energy-Data "report" program. The program takes use of JSF, JDBC, PrimeFaces and SQL for the database.
+This is our Energy-Data "report" program. The program takes use of <b>JSF</b>, JDBC, PrimeFaces and SQL for the database.
 Required: JavaEE IDE, (local) database server, SQL handler, Tomcat(TomEE) 8.5.
 
 Installation / run.
