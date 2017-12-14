@@ -1,13 +1,13 @@
 # Energy-Data-Application
 Hello!
 
-This is our Energy-Data "report" program. The program takes use of <b>JSF</b>, JDBC</b>, <b>PrimeFaces</b> and <b>SQL</b> for the database.
+This is our Energy-Data "report" program. The program takes use of <b>JSF</b>, </b>JDBC</b>, <b>PrimeFaces</b> and <b>SQL</b> for the database.
 Required: <b>JavaEE IDE </b>, (local) <b>Database server</b>, <b>SQL handler</b>, <b>Tomcat(TomEE) 8.5</b>.
 
 Installation / run.
 
 1. <b>Download</b> the repo containing the JSF project and SQL file.
-2. Import the <b>SQL file (energy-data.sql) to your DB-handler.
+2. Import the <b>SQL file (energy-data.sql)</b> to your DB-handler.
 3. Create <b>user and password</b> in your DB-handler.
 4. Import the <b>Java project</b> into your IDE.
 5. Re-path your <b>java build path</b>.
