@@ -14,6 +14,7 @@ Installation / run.
 6. Under "WebContent/META-INF/context.xml change your <b>username="maxAdmin"</b>, <b>password="abc123"</b> to your created user.
 7. Start up your <b>database server</b>.
 8. Run the <b>test-list.xhtml</b> on server (tomcat 8.5)
+9. Go to: http://localhost:8080/energy-data
 
 
 
