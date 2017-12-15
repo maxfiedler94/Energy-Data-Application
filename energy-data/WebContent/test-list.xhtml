@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<f:metadata>
+	<f:event type="preRenderView"
+		listener="#{energyDataController.loadEnergyData(energyData)}" />
+</f:metadata>
+
+<h:head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Energy Data Application</title>
+	<h:outputStylesheet library="css" name="style.css" />
+</h:head>
+<h:body>
+
+	<!-- Main div/wrapper -->
+	<div class="ui-g">
+		<div id="header">
+			<h:graphicImage value="resources/img/header1.png" />
+		</div>
+		<h:messages globalOnly="true" />
+		<!-- Table and header div -->
+		<div class="ui-g">
+			<p:commandButton value="Add" type="button"
+				onclick="PF('dlg2').show();" />
+			<p:spacer width="1160" height="10" />
+			
+			<!-- Form for the search, button + field -->
+			<h:form>
+			
+				<!-- Search field -->
+				<p:inputText value="#{energyData.searchQuery}" id="search" />
+				
+				<!-- Search button -->
+				<p:commandButton icon="fa fa-search-minus"
+					actionListener="#{energyDataController.searchEnergyData(energyData)}"
+					ajax="true" update="form:energy-data" />
+					
+				<!-- Reset search button -->
+				<p:commandButton icon="fa fa-fw fa-refresh"
+					actionListener="#{energyData.resetSearch()}" ajax="true"
+					update="form:energy-data" />
+					
+			</h:form><!-- End of search form -->
+
+			<!-- Modal form for adding new energydata -->
+			<h:form id="add" style="margin-top: 10px;">
+				<p:growl id="msgs" showDetail="true" />
+				<p:dialog header="Add Energy Data" widgetVar="dlg2" modal="true"
+					height="430" resizable="false">
+					<p:panelGrid columns="3">
+					
+						<!-- Zone add -->
+						<p:outputLabel>Zone: </p:outputLabel>
+						<p:inputText value="#{energyData.zone}" id="zone" required="true"
+							requiredMessage=" - Zone is mandatory" />
+						<!--  Level 1 consumer add -->
+						<p:outputLabel>Level-1-Consumer:</p:outputLabel>
+						<p:inputText value="#{energyData.levelOneConsumer}"
+							id="levelOneConsumer" />
+							
+						<!--  Level 2 consumer add -->
+						<p:outputLabel>Level-2-Consumer:</p:outputLabel>
+						<p:inputText value="#{energyData.levelTwoConsumer}"
+							id="levelTwoConsumer" />
+							
+						<!--  Level 3 consumer add -->
+						<p:outputLabel>Level-3-Consumer:</p:outputLabel>
+						<p:inputText value="#{energyData.levelThreeConsumer}"
+							id="levelThreeConsumer" />
+							
+						<!--  Input date add -->
+						<p:outputLabel for="mask">Input Date: </p:outputLabel>
+						<p:calendar id="mask" value="#{energyData.inputDate}"
+							pattern="yyyy-MM-dd" mask="true" required="true"
+							requiredMessage=" - Date is mandatory" />
+							
+						<!--  Connected installed power add -->
+						<p:outputLabel>Connected Installed Power:</p:outputLabel>
+						<p:inputText value="#{energyData.connInstalledPower}"
+							id="connInstalledPower"
+							converterMessage="Connected Installed Power can only be numbers" />
+
+						<!--  Utilization of consumer add -->
+						<p:outputLabel>Utilization of Consumer:</p:outputLabel>
+						<p:inputText value="#{energyData.utilOfConsumer}"
+							id="utilOfConsumer"
+							converterMessage="Utilization of Consumer can only be numbers" />
+
+						<!--  Anually hours add -->
+						<p:outputLabel>Anually Hours:</p:outputLabel>
+						<p:inputText value="#{energyData.anuallyHours}" id="anuallyHours"
+							converterMessage="Anually Hours can only be numbers" />
+						<br/>
+						<!-- Add button -->
+						<p:commandButton value="Save" styleClass="save" update=":add:msgs"
+							action="#{energyDataController.addEnergyData(energyData)}" />
+
+					</p:panelGrid>
+					
+					
+					<!-- Datepicker add -->
+					<p:dialog modal="true" resizable="false" header="Values"
+						widgetVar="dlg" showEffect="fold">
+						<p:panelGrid id="display" columns="2" columnClasses="label,value">
+							<h:outputText value="Mask:" />
+							<h:outputText value="#{energyData.inputDate}">
+								<f:convertDateTime pattern="yyyy-MM-dd" />
+							</h:outputText>
+						</p:panelGrid>
+					</p:dialog>
+				</p:dialog>
+			</h:form><!-- End of add form -->
+			
+			<br />
+			<!-- Table form -->
+			<h:form id="form">
+				<p:growl id="msgs" showDetail="true" />
+				<p:dataTable value="#{energyDataController.energyData}"
+					var="tempData" id="energy-data" editable="true"
+					rowKey="#{tempData.electricityId}">
+					
+					<!-- Actionlistener for edit/update -->
+					<p:ajax event="rowEdit"
+						listener="#{energyDataController.onRowEdit}" update=":form:msgs" />
+					<p:ajax event="rowEditCancel" listener="#{energyData.onRowCancel}"
+						update=":form:msgs" />
+						
+					<!-- Table header -->
+					<f:facet name="header">
+						Energy Data
+					</f:facet>
+
+					<!-- Energydata headers -->
+					<p:columnGroup type="header">
+						<p:row>
+							<p:column colspan="4" headerText="Energy Aspect Electricity" />
+							<p:column colspan="6" headerText="Consumption" />
+						</p:row>
+						
+						<!-- Column headers -->
+						<p:row>
+							<p:column headerText="Zone" />
+							<p:column headerText="Level-1-Consumer" />
+							<p:column headerText="Level-2-Consumer" />
+							<p:column headerText="Level-3-Consumer" />
+
+							<p:column headerText="Connected Installed Power" />
+							<p:column headerText="Utilization of Consumer" />
+							<p:column headerText="Anual Hours" />
+							<p:column headerText="Consumption"/>
+							<p:column headerText="Input date" />
+							<p:column headerText="Edit" />
+						</p:row>
+					</p:columnGroup>
+					
+					<!-- Zone edit/output -->
+					<p:column>
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tempData.zone}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText id="zone" value="#{tempData.zone}"
+									style="width:100%" required="true"
+									requiredMessage=" - Zone is mandatory" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					<!-- Level 1 Consumer edit/output -->
+					<p:column>
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tempData.levelOneConsumer}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText id="level-1-consumer"
+									value="#{tempData.levelOneConsumer}" style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					<!-- Level 2 Consumer edit/output -->
+					<p:column>
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tempData.levelTwoConsumer}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText id="level-2-consumer"
+									value="#{tempData.levelTwoConsumer}" style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					<!-- Level 3 Consumer edit/output -->
+					<p:column>
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tempData.levelThreeConsumer}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText id="level-3-consumer"
+									value="#{tempData.levelThreeConsumer}" style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					<!-- Connected installed power edit/output -->
+					<p:column>
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tempData.connInstalledPower}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText id="conn-installed-power"
+									value="#{tempData.connInstalledPower}" style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					<!-- Utilization of consumer edit/output -->
+					<p:column>
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tempData.utilOfConsumer}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText id="util-of-consumer"
+									value="#{tempData.utilOfConsumer}" style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					<!-- Anually hours edit/output -->
+					<p:column>
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tempData.anuallyHours}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText id="anually-hours" value="#{tempData.anuallyHours}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					<!-- Sum edit/output -->
+					<p:column>
+						<h:outputText value="#{tempData.sum}" />
+					</p:column>
+					
+					<!-- Input date edit/output -->
+					<p:column>
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{tempData.inputDate}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:calendar id="mask" value="#{tempData.inputDate}"
+									pattern="yyyy-MM-dd" mask="true" required="true"
+									requiredMessage=" - Date is mandatory" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:50%">
+						<!-- Edit/update primefaces button -->
+						<p:rowEditor />
+						
+						<!-- Delete commandlink -->
+						<p:commandLink value="Delete"
+							actionListener="#{energyDataController.deleteEnergyData(tempData.electricityId)}"
+							update=":form:energy-data" ajax="true">
+							<p:confirm header="Confirmation" message="Are you sure?"
+								icon="ui-icon-alert" />
+						</p:commandLink>
+						
+						<!--Confirmation dialog for delete  -->
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+							<p:commandButton value="Yes" type="button"
+								styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+							<p:commandButton value="No" type="button"
+								styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+						</p:confirmDialog>
+					</p:column>
+					
+					<!-- Table-footer -->
+					<f:facet name="footer">
+      				  		COPYRIGHT ETC
+      				 </f:facet>
+      				 
+      				 <!-- Datepicker for update -->
+					<p:dialog modal="true" resizable="false" header="Values"
+						widgetVar="dlg" showEffect="fold">
+						<p:panelGrid id="display" columns="2" columnClasses="label,value">
+							<h:outputText value="Mask:" />
+							<h:outputText value="#{tempData.inputDate}">
+								<f:convertDateTime pattern="yyyy-MM-dd" />
+							</h:outputText>
+						</p:panelGrid>
+					</p:dialog>
+				</p:dataTable>
+			</h:form> <!-- End of table form -->
+		</div> <!-- End of div containing table,header -->
+	</div><!-- End of wrapper/main -->
+</h:body>
+</html>
